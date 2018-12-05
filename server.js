@@ -54,7 +54,6 @@ router.post("/addShop", (req, res) => {
   }
   shop.name = name;
   shop.url = url;
-  console.log('the shop: ', shop)
   shop.save(err => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
