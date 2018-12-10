@@ -133,7 +133,7 @@ router.post("/addOrder", (req, res) => {
 
   const {
     id, state, items, specialInstructions,
-    shopId, shopName, shopUrl
+    shopId, shopName, shopUrl, userInfo
   } = req.body.order;
 
   order.id = id;
@@ -143,6 +143,8 @@ router.post("/addOrder", (req, res) => {
   order.shopId = shopId;
   order.shopName = shopName;
   order.shopUrl = shopUrl;
+  order.userInfo = userInfo;
+  order.userEventsUrl = process.env.eventsUrl;
 
   order.save(err => {
     if (err) return res.json({ success: false, error: err });
