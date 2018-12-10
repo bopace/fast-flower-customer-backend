@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Shop = require('./shop');
 const Order = require('./order');
+const UserInfo = require('./userInfo')
 
 const API_PORT = 3001;
 const app = express();
@@ -26,6 +27,40 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
+
+/*
+ *
+ * DB ACCESS
+ *
+ * user info
+ *
+ */
+
+router.get("/addUserInfo", (req, res) => {
+  let userInfo = new UserInfo();
+  userInfo.name = 'bo';
+  userInfo.address = 'asdf';
+  userInfo.cellNumber = 'asdfiojsf';
+  userInfo.save(err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
+
+router.get('/getUserInfo', (req, res) => {
+  UserInfo.find((err, data) => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: data });
+  });
+});
+
+router.post("/updateUserInfo", (req, res) => {
+  const { update } = req.body;
+  UserInfo.findOneAndUpdate({}, update, err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
 
 /*
  *
