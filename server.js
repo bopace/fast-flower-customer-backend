@@ -152,6 +152,14 @@ router.post("/addOrder", (req, res) => {
   });
 });
 
+router.post("/updateOrder", (req, res) => {
+  const { id, update } = req.body;
+  Order.findOneAndUpdate({id: id}, update, err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
+
 app.use("/api", router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));
