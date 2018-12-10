@@ -144,7 +144,6 @@ router.post("/addOrder", (req, res) => {
   order.shopName = shopName;
   order.shopUrl = shopUrl;
   order.userInfo = userInfo;
-  order.userEventsUrl = process.env.eventsUrl;
 
   order.save(err => {
     if (err) return res.json({ success: false, error: err });
@@ -158,6 +157,34 @@ router.post("/updateOrder", (req, res) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
+});
+
+
+/*
+ *
+ *
+ * event handling
+ *
+ */
+
+router.post("/events", (req, res) => {
+  const { event } = req.body;
+
+  if (event.domain === 'order') {
+    delete event.attrs.order._id
+    Order.findOneAndUpdate({ id: event.attrs.order.id }, { $set: event.attrs.order }, { upsert: true, new: true }, (err, doc) => {
+      if (err) return res.json({ success: false, error: err });
+      return res.json({ success: true });
+    })
+  }
+
+  if (event.domain === 'offer') {
+    // logic goes here
+  }
+
+  if (event.domain === 'delivery') {
+    // logic goes here
+  }
 });
 
 app.use("/api", router);
