@@ -115,7 +115,6 @@ router.post("/addShop", (req, res) => {
 
 router.get('/getOrders', (req, res) => {
   Order.find((err, data) => {
-    console.log('data', data)
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true, data: data });
   });
@@ -146,7 +145,6 @@ router.post("/addOrder", (req, res) => {
   order.shopUrl = shopUrl;
 
   order.save(err => {
-    console.log('saved?')
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
