@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
 const Shop = require('./shop');
+const Order = require('./order');
 
 const API_PORT = 3001;
 const app = express();
@@ -25,6 +26,14 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
+
+/*
+ *
+ * DB ACCESS
+ *
+ * shops
+ *
+ */
 
 router.get('/getShops', (req, res) => {
   Shop.find((err, data) => {
@@ -55,6 +64,54 @@ router.post("/addShop", (req, res) => {
   shop.name = name;
   shop.url = url;
   shop.save(err => {
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true });
+  });
+});
+
+
+/*
+ *
+ * DB ACCESS
+ *
+ * orders
+ *
+ */
+
+router.get('/getOrders', (req, res) => {
+  Order.find((err, data) => {
+    console.log('data', data)
+    if (err) return res.json({ success: false, error: err });
+    return res.json({ success: true, data: data });
+  });
+});
+
+router.delete("/deleteOrder", (req, res) => {
+  const { id } = req.body;
+  Shop.findOneAndDelete(id, err => {
+    if (err) return res.send(err);
+    return res.json({ success: true });
+  });
+});
+
+router.post("/addOrder", (req, res) => {
+  let order = new Order();
+
+  const {
+    id, state, items, specialInstructions,
+    shopId, shopName, shopUrl
+  } = req.body.order;
+
+  order.id = id;
+  order.state = state;
+  order.items = items;
+  order.specialInstructions = specialInstructions;
+  order.shopId = shopId;
+  order.shopName = shopName;
+  order.shopUrl = shopUrl;
+
+  order.save(err => {
+    console.log('saved?')
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
   });
