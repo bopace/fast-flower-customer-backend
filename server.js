@@ -1,5 +1,6 @@
 require('dotenv').load();
 const mongoose = require('mongoose');
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
@@ -27,6 +28,8 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(logger('dev'));
+app.use(cors());
+app.options('*', cors());
 
 /*
  *
