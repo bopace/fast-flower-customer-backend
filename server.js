@@ -156,10 +156,10 @@ router.post("/addOrder", (req, res) => {
 
 router.post("/updateOrder", (req, res) => {
   const { id, update } = req.body;
-  Order.findOneAndUpdate({id: id}, update, err => {
+  Order.findOneAndUpdate({ id: id }, { $set: update }, { upsert: true, new: true }, (err, doc) => {
     if (err) return res.json({ success: false, error: err });
     return res.json({ success: true });
-  });
+  })
 });
 
 
